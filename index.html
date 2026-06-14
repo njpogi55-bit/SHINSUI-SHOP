@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHINSUI STORE</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial;
+  background:#050505;
+  color:#f2f2f2;
+  overflow-x:hidden;
+}
+
+/* PARTICLES */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-10;
+}
+
+/* =========================
+   ADVANCED BLACK & WHITE BACKGROUND
+========================= */
+
+.bg{
+  position:fixed;
+  inset:0;
+  z-index:-9;
+
+  background: radial-gradient(circle at top, #151515, #050505 70%);
+  overflow:hidden;
+}
+
+/* MAIN 3D GRID */
+.bg::before{
+  content:"";
+  position:absolute;
+  inset:-200%;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.10) 0px,
+      transparent 2px,
+      transparent 110px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.06) 0px,
+      transparent 2px,
+      transparent 110px
+    );
+
+  transform: perspective(1000px) rotateX(75deg);
+  transform-origin:center;
+
+  animation:gridMove 6s linear infinite;
+
+  filter: blur(0.3px);
+}
+
+/* DEPTH LAYER */
+.bg::after{
+  content:"";
+  position:absolute;
+  inset:-200%;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.04) 0px,
+      transparent 1px,
+      transparent 70px
+    );
+
+  transform: perspective(1000px) rotateX(80deg);
+
+  animation:gridMoveFast 4s linear infinite;
+
+  opacity:0.6;
+}
+
+/* ANIMATION */
+@keyframes gridMove{
+  0%{
+    transform: perspective(1000px) rotateX(75deg) translateY(0);
+  }
+  100%{
+    transform: perspective(1000px) rotateX(75deg) translateY(220px);
+  }
+}
+
+@keyframes gridMoveFast{
+  0%{
+    transform: perspective(1000px) rotateX(80deg) translateY(0);
+  }
+  100%{
+    transform: perspective(1000px) rotateX(80deg) translateY(340px);
+  }
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:18px 20px;
+
+  background:rgba(10,10,10,0.6);
+  backdrop-filter:blur(10px);
+
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+  font-size:22px;
+  font-weight:bold;
+  color:#ffffff;
+}
+
+/* MENU BUTTON */
+.menu-btn{
+  width:45px;
+  height:45px;
+
+  border:none;
+  border-radius:12px;
+
+  background:rgba(255,255,255,0.05);
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:5px;
+
+  cursor:pointer;
+}
+
+.menu-btn span{
+  width:22px;
+  height:2px;
+  background:#ffffff;
+}
+
+/* OVERLAY */
+.overlay{
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:0.25s;
+
+  z-index:90;
+}
+
+.overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* DROPDOWN */
+.dropdown{
+  position:fixed;
+
+  right:20px;
+  top:75px;
+
+  width:230px;
+
+  background:rgba(15,15,15,0.95);
+
+  border:1px solid rgba(255,255,255,0.12);
+
+  border-radius:16px;
+
+  overflow:hidden;
+
+  opacity:0;
+  transform:translateY(-20px);
+
+  pointer-events:none;
+
+  transition:0.25s;
+
+  z-index:120;
+}
+
+.dropdown.show{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+
+.dropdown button{
+  width:100%;
+  padding:15px;
+
+  background:none;
+  border:none;
+
+  color:white;
+  text-align:left;
+
+  cursor:pointer;
+}
+
+.dropdown button:hover{
+  background:rgba(255,255,255,0.08);
+  padding-left:20px;
+}
+
+/* HERO */
+.hero{
+  padding:60px 20px 30px;
+  text-align:center;
+}
+
+.hero h1{
+  font-size:40px;
+  color:#ffffff;
+}
+
+.hero p{
+  margin-top:10px;
+  opacity:0.8;
+}
+
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+
+  gap:15px;
+
+  padding:20px;
+}
+
+.stat{
+  background:rgba(255,255,255,0.04);
+
+  border:1px solid rgba(255,255,255,0.08);
+
+  border-radius:16px;
+
+  padding:20px;
+  text-align:center;
+
+  backdrop-filter:blur(10px);
+}
+
+.stat h2{
+  color:#ffffff;
+  margin-bottom:5px;
+}
+
+/* SECTION */
+.section{
+  display:none;
+  padding:20px;
+}
+
+.section.active{
+  display:block;
+}
+
+/* PRODUCT GRID */
+.container{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+
+/* CARD */
+.card{
+  position:relative;
+
+  background:rgba(255,255,255,0.05);
+
+  border:1px solid rgba(255,255,255,0.10);
+
+  border-radius:18px;
+
+  overflow:hidden;
+
+  backdrop-filter:blur(12px);
+
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-8px) scale(1.02);
+
+  box-shadow:0 0 25px rgba(255,255,255,0.12);
+}
+
+/* IMAGE */
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+}
+
+/* CONTENT */
+.content{
+  padding:15px;
+}
+
+.price{
+  margin-top:10px;
+  color:#ffffff;
+  font-size:20px;
+  font-weight:bold;
+}
+
+.desc{
+  opacity:0.7;
+  margin-top:8px;
+  font-size:13px;
+}
+
+/* BUTTON */
+.btn{
+  width:100%;
+  padding:13px;
+  margin-top:15px;
+
+  border:none;
+  border-radius:12px;
+
+  cursor:pointer;
+
+  color:black;
+  font-weight:bold;
+
+  background:#ffffff;
+
+  transition:0.25s;
+}
+
+.btn:hover{
+  transform:scale(1.03);
+}
+
+/* REVIEWS */
+.reviews{
+  margin-top:40px;
+}
+
+.review-wrap{
+  display:flex;
+  gap:15px;
+
+  overflow:auto;
+
+  padding-bottom:10px;
+}
+
+.review{
+  min-width:250px;
+
+  background:rgba(255,255,255,0.05);
+
+  border-radius:16px;
+
+  padding:20px;
+
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  background:rgba(0,0,0,0.7);
+
+  backdrop-filter:blur(10px);
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:0.25s;
+
+  z-index:300;
+}
+
+.modal.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal-box{
+  width:90%;
+  max-width:380px;
+
+  background:#111;
+
+  border-radius:20px;
+
+  padding:25px;
+
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+.input{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+
+  background:#1a1a1a;
+  border:none;
+  border-radius:12px;
+
+  color:white;
+}
+*{
+  text-shadow: 0 0 6px rgba(255,255,255,0.25);
+}
+
+/* stronger glow for headings */
+h1, h2, h3, .logo{
+  text-shadow:
+    0 0 8px rgba(255,255,255,0.35),
+    0 0 16px rgba(255,255,255,0.15);
+}
+
+/* optional: stronger hover glow for buttons/text links */
+button, .btn{
+  text-shadow: 0 0 6px rgba(255,255,255,0.3);
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="bg"></div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<!-- HEADER -->
+<header>
+
+  <div class="logo">SHINSUI STORE</div>
+
+  <button class="menu-btn" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+</header>
+
+<!-- DROPDOWN -->
+<div class="dropdown" id="dropdown">
+
+  <button onclick="showSection('products')">
+    📦 PRODUCTS
+  </button>
+
+  <button onclick="showSection('downloads')">
+    📥 FREE DOWNLOADS
+  </button>
+
+  <button onclick="showSection('telegram')">
+    📢 TELEGRAM
+  </button>
+
+  <button onclick="showSection('tiktok')">
+    🎵 TIKTOK
+  </button>
+
+  <button onclick="showSection('key')">
+    🔑 FREE KEY
+  </button>
+
+</div>
+
+<!-- HERO -->
+<div class="hero">
+
+  <h1>SHINSUI STORE</h1>
+
+  <p>
+    Premium Gaming Chair Experience
+  </p>
+
+</div>
+
+<!-- STATS -->
+<div class="stats">
+
+  <div class="stat">
+    <h2 id="c1">0</h2>
+    <p>Customers</p>
+  </div>
+
+  <div class="stat">
+    <h2 id="c2">0</h2>
+    <p>Keys Delivered</p>
+  </div>
+
+  <div class="stat">
+    <h2>24/7</h2>
+    <p>Support</p>
+  </div>
+
+</div>
+
+<!-- PRODUCTS -->
+<section id="products" class="section active">
+
+<div class="container">
+
+<!-- CARD -->
+<div class="card">
+
+<div class="badge">
+🔥 POPULAR
+</div>
+
+<img src="https://raw.githubusercontent.com/AETHERN-arch/test-website-mod/main/IMG_20260519_084621_095.jpg">
+
+<div class="content">
+
+<h3>7 DAYS PREMIUM</h3>
+
+<div class="price">
+₱150
+</div>
+
+<div class="desc">
+Short access package
+</div>
+
+<button class="btn" onclick="openCheckout('7 DAYS PREMIUM')">
+BUY NOW
+</button>
+
+</div>
+</div>
+
+<!-- CARD -->
+<div class="card">
+
+<div class="badge">
+💎 BEST VALUE
+</div>
+
+<img src="https://github.com/njpogi55-bit/SHINSUI-SHOP/main/IMG_20260519_084621_095.jpg">
+
+<div class="content">
+
+<h3>15 DAYS PREMIUM</h3>
+
+<div class="price">
+₱30
+</div>
+
+<div class="desc">
+Balanced package
+</div>
+
+<button class="btn" onclick="openCheckout('15 DAYS PREMIUM')">
+BUY NOW
+</button>
+
+</div>
+</div>
+
+<!-- CARD -->
+<div class="card">
+
+<div class="badge">
+⚡ LIMITED
+</div>
+
+<img src="https://github.com/njpogi55-bit/SHINSUI-SHOP/main/IMG_20260519_084621_095.jpg">
+
+<div class="content">
+
+<h3>1 MONTH PREMIUM</h3>
+
+<div class="price">
+₱100
+</div>
+
+<div class="desc">
+Full access package
+</div>
+
+<button class="btn" onclick="openCheckout('1 MONTH PREMIUM')">
+BUY NOW
+</button>
+
+</div>
+</div>
+
+<!-- CARD -->
+<div class="card">
+
+<div class="badge">
+👑 LIFETIME
+</div>
+
+<img src="https://github.com/njpogi55-bit/SHINSUI-SHOP/main/IMG_20260519_084621_095.jpg">
+
+<div class="content">
+
+<h3>LIFETIME PREMIUM</h3>
+
+<div class="price">
+₱150
+</div>
+
+<div class="desc">
+Forever access package
+</div>
+
+<button class="btn" onclick="openCheckout('LIFETIME PREMIUM')">
+BUY NOW
+</button>
+
+</div>
+</div>
+
+</div>
+
+<!-- REVIEWS -->
+<div class="reviews">
+
+<h2 style="margin-bottom:15px">
+⭐ VOUCHES
+</h2>
+
+<div class="review-wrap">
+
+<div class="review"><h4>★★★★★</h4><p>Fast transaction, legit seller.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Received instantly after payment.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Best premium experience.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Very smooth deal, no issues.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Trusted seller, will buy again.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Instant delivery, highly recommended.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Support was fast and helpful.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Everything works as described.</p></div>
+<div class="review"><h4>★★★★★</h4><p>No scam, very legit.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Super smooth transaction.</p></div>
+
+<div class="review"><h4>★★★★★</h4><p>Fast replies on Telegram.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Very trustworthy seller.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Got my access instantly.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Highly recommended store.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Very affordable and fast.</p></div>
+
+<div class="review"><h4>★★★★★</h4><p>Clean transaction process.</p></div>
+<div class="review"><h4>★★★★★</h4><p>One of the best sellers.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Everything went smoothly.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Instant response always.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Very reliable service.</p></div>
+
+<div class="review"><h4>★★★★★</h4><p>Got exactly what I ordered.</p></div>
+<div class="review"><h4>★★★★★</h4><p>No issues at all.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Fast and secure deal.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Great experience overall.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Super legit seller.</p></div>
+
+<div class="review"><h4>★★★★★</h4><p>Very smooth process.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Fast delivery guaranteed.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Highly trusted seller.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Very professional service.</p></div>
+<div class="review"><h4>★★★★★</h4><p>No delays at all.</p></div>
+
+<div class="review"><h4>★★★★★</h4><p>Quick and easy transaction.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Best seller I’ve dealt with.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Instant key delivery.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Everything works perfectly.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Super smooth deal.</p></div>
+
+<div class="review"><h4>★★★★★</h4><p>Fast support and replies.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Legit and trusted.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Very satisfied customer.</p></div>
+<div class="review"><h4>★★★★★</h4><p>No problems at all.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Highly recommended.</p></div>
+
+<div class="review"><h4>★★★★★</h4><p>Reliable and fast service.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Good communication.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Instant delivery confirmed.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Very smooth experience.</p></div>
+<div class="review"><h4>★★★★★</h4><p>Best premium service.</p></div>
+
+</div>
+</div>
+
+</section>
+
+<!-- TELEGRAM -->
+<section id="telegram" class="section">
+
+<h2>📢 TELEGRAM CHANNELS</h2>
+
+<br>
+
+<a href="https://t.me/shinsui67l" target="_blank">
+  <button class="btn">Shinsui Main Channel</button>
+</a>
+
+<br><br>
+
+<a href="https://t.me/shinsuistocks" target="_blank">
+  <button class="btn">SHINSUI STOCKS</button>
+</a>
+
+</section>
+
+<!-- FREE DOWNLOAD -->
+<!-- FREE DOWNLOAD -->
+<section id="downloads" class="section">
+
+<h2>📥 FREE DOWNLOADS</h2>
+
+<br>
+
+<a href="https://www.mediafire.com/file/sc65tech2lbvuyb/𝐒𝐡𝐢𝐧𝐬𝐮𝐢+𝐂𝐨𝐧𝐭𝐚𝐢𝐧𝐞𝐫.apk/file" target="_blank">
+  <button class="btn">📦 CONTAINER</button>
+</a>
+
+<br><br>
+
+<a href="https://www.mediafire.com/file/6qa0hb9qfjw4dpe/sʜɪɴsᴜɪ+ɪɴᴊᴇᴄᴛᴏʀ+ᴠɪᴘ_1.6.55.apk/file" target="_blank">
+  <button class="btn">⚙️ INJECTOR (MAINTENANCE)</button>
+</a>
+
+<br><br>
+
+<a href="https://www.mediafire.com/file/oldtz3s0beelgr5/Call_of_Duty_1.6.55.apks/file" target="_blank">
+  <button class="btn">🔥 MOD MENU</button>
+</a>
+
+</section>
+
+<!-- KEY SECTION -->
+<section id="key" class="section">
+
+<h2>🔑 KEY ACCESS</h2>
+
+<br>
+
+<div class="key-box" id="keyBox">
+  <span class="glitch" data-text="7xFree-Jsnd">7xFree-Jsnd</span>
+</div>
+
+</section>
+
+<!-- TIKTOK -->
+<section id="tiktok" class="section">
+
+<h2>🎵 TIKTOK ACCOUNTS</h2>
+
+<br>
+
+<a href="https://www.tiktok.com/@severalpogix" target="_blank">
+  <button class="btn">@Shinsui main</button>
+</a>
+
+<br><br>
+
+<a href="https://www.tiktok.com/@shinsuke_shin67" target="_blank">
+  <button class="btn">@Shinsui Second</button>
+</a>
+
+</section>
+
+<!-- CHECKOUT -->
+<div class="modal" id="checkout">
+
+<div class="modal-box">
+
+<h2>CHECKOUT</h2>
+
+<p id="selected"></p>
+
+<button class="btn" onclick="payNow()">
+CONTACT SELLER
+</button>
+
+</div>
+</div>
+
+<script>
+
+/* MENU */
+function toggleMenu(){
+  dropdown.classList.toggle("show");
+  overlay.classList.toggle("active");
+}
+
+function closeMenu(){
+  dropdown.classList.remove("show");
+  overlay.classList.remove("active");
+}
+
+/* SECTION */
+function showSection(id){
+
+  document.querySelectorAll(".section")
+  .forEach(s=>s.classList.remove("active"));
+
+  document.getElementById(id)
+  .classList.add("active");
+
+  closeMenu();
+}
+
+/* COUNTERS */
+function counter(id,target){
+
+  let el=document.getElementById(id);
+
+  let count=0;
+
+  let speed=target/100;
+
+  let x=setInterval(()=>{
+
+    count+=speed;
+
+    if(count>=target){
+      count=target;
+      clearInterval(x);
+    }
+
+    el.innerText=Math.floor(count);
+
+  },20);
+}
+
+counter("c1",2219);
+counter("c2",3698);
+
+/* CHECKOUT */
+let selectedProduct="";
+
+function openCheckout(product){
+
+  selectedProduct=product;
+
+  document.getElementById("selected")
+  .innerText=product;
+
+  checkout.classList.add("active");
+}
+
+checkout.onclick=(e)=>{
+  if(e.target.id==="checkout"){
+    checkout.classList.remove("active");
+  }
+}
+
+function payNow(){
+
+  window.open(
+    "https://t.me/WinterShinsui?text=" +
+    encodeURIComponent(
+      "I want to buy: " + selectedProduct
+    ),
+    "_blank"
+  );
+}
+
+/* PARTICLES */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+
+for(let i=0;i<70;i++){
+
+  particles.push({
+
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+
+    r:Math.random()*2+1,
+
+    dx:(Math.random()-0.5)*0.5,
+    dy:(Math.random()-0.5)*0.5
+
+  });
+}
+
+function animate(){
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  particles.forEach(p=>{
+
+    ctx.beginPath();
+
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+
+    ctx.fillStyle="rgba(255,0,170,0.6)";
+    ctx.fill();
+
+    p.x+=p.dx;
+    p.y+=p.dy;
+
+    if(p.x<0||p.x>canvas.width)p.dx*=-1;
+    if(p.y<0||p.y>canvas.height)p.dy*=-1;
+
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+function showSection(id){
+
+  document.querySelectorAll(".section")
+  .forEach(s => s.classList.remove("active"));
+
+  document.getElementById(id)
+  .classList.add("active");
+
+  // trigger glitch restart when KEY tab opens
+  if(id === "key"){
+    const el = document.getElementById("keyBox");
+    el.style.animation = "none";
+    void el.offsetWidth; // reset animation
+    el.style.animation = "fadeIn 0.5s ease";
+  }
+
+  closeMenu();
+}
+
+</script>
+
+</body>
+</html>
